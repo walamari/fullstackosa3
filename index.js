@@ -47,6 +47,12 @@ let persons = [
         res.json(persons)
     })
 
+/*     app.get('/api/persons', (request, response) => {
+      Note.find({}).then(persons => {
+        response.json(persons)
+      })
+    }) */
+
     app.get('/api/persons/:id', (request, response) => {
         const id = Number(request.params.id)
         const henkilo = persons.find(henkilo => henkilo.id === id)
@@ -60,8 +66,7 @@ let persons = [
 
     app.delete('/api/persons/:id', (request, response) => {
         const id = Number(request.params.id)
-        persons = persons.filter(henkilo => henkilo.id !== id)
-      
+        persons = persons.filter(henkilo => henkilo.id !== id)     
         response.status(204).end()
     })
 
@@ -87,16 +92,12 @@ let persons = [
             })
         }
 
-
         const henkilo = {  
             id: luoId(),
             name: body.name,
             number: body.number,
-         
         }
-
         persons = persons.concat(henkilo)
-      
         response.json(henkilo)
       })
 
@@ -104,7 +105,6 @@ let persons = [
         const maxId = persons.length > 0
           ? Math.max(...persons.map(n => n.id)) 
           : 0
-
         return maxId + 1
       }
 
