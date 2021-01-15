@@ -17,17 +17,19 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
 
 const numberSchema = new mongoose.Schema({
   name: String,
-  number: String,
+  number: Number,
   id: String,
 })
-const PhoneNumber = mongoose.model('PhoneNumber', numberSchema)
 
-const numero = new PhoneNumber({
+const Yhteystieto = mongoose.model('Yhteystieto', numberSchema)
+
+const numero = new Yhteystieto({
   name: nimi,
   number: puhelinumero,
   id: nimi,
 })
 
+/* 
 if(process.argv[3] !== undefined && process.argv[4] !== undefined ){
 
   numero.save().then(response => {
@@ -35,11 +37,11 @@ if(process.argv[3] !== undefined && process.argv[4] !== undefined ){
     mongoose.connection.close()
   })
 }
-else{
-  PhoneNumber.find({}).then(result => {
+else{} */
+
+  Yhteystieto.find({}).then(result => {
     result.forEach(phoneNumber => {
       console.log(phoneNumber)
     })
     mongoose.connection.close()
   })
-}
