@@ -27,25 +27,38 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
+    console.log("body.name")
+    console.log(body.name)
+    console.log(body)
 
-    if (body.name === undefined) {
-        return response.status(400).json({ error: 'name missing' })
+
+/*     if (body.name.length < 1) {
+      console.log("iffin sisällä1")
+      return response.status(400).send({ error: 'Nimi tai puhelinnumero ei voi olla tyhjä' })
+      next(error)
+        /* return response.status(204).json({ error: 'name missing' }) 
     }
-
-    if (body.number === undefined) {
-        return response.status(400).json({ error: 'number missing' })
-    }
-
+ 
+    if (body.number.length < 1) {
+      console.log("iffin sisällä2")
+      return response.status(400).send({ error: 'Nimi tai puhelinnumero ei voi olla tyhjä' })
+      next(error)
+        /* return response.status(204).json({ error: 'number missing' }) 
+    }  */
+ 
     const henkilo = new Yhteystieto( {
         name: body.name,
         number: body.number,
     })
 
-    henkilo.save().then(tallennettuNumero => {
+    henkilo.save() 
+    .then(tallennettuNumero => tallennettuNumero.toJSON())
+    .then(tallennettuNumero => {
       response.json(tallennettuNumero)
     })
+    .catch(error => next(error))
 })
 
 
@@ -79,14 +92,23 @@ app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
+  console.error(error.name)
 
-  if (error.name === 'CastError' && error.kind == 'ObjectId') {
+
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }  
+
+  if (error.name === 'ReferenceError' ) {
+    return response.status(400).send({ error: 'Nimi tai puhelinnumero ei voi olla tyhjä' })
+  }   
+
+  if (error.name === 'ValidationError') {
+  return response.status(400).json({ error: error.message })
+  }
 
   next(error)
-}
-
+} 
 
 app.use(errorHandler)
 

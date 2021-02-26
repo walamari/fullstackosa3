@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+var uniqueValidator = require('mongoose-unique-validator');
 
 if (process.argv.length<3) {
   console.log('give password as argument')
@@ -16,10 +17,24 @@ const url =`mongodb+srv://fullstack:${password}@cluster0.nogrb.mongodb.net/numbe
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
 
 const numberSchema = new mongoose.Schema({
-  name: String,
-  number: Number,
+  name: {
+  type: String,
+  minlength: 3,
+  required: true,
+  unique: true
+  },
+
+  number: {
+  type: Number,
+  required: true,
+  minlength: 8
+  }, 
+
   id: String,
 })
+
+numberSchema.plugin(uniqueValidator);
+
 
 const Yhteystieto = mongoose.model('Yhteystieto', numberSchema)
 
@@ -38,6 +53,8 @@ if(process.argv[3] !== undefined && process.argv[4] !== undefined ){
   })
 }
 else{} */
+
+
 
   Yhteystieto.find({}).then(result => {
     result.forEach(phoneNumber => {
