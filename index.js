@@ -18,7 +18,7 @@ app.use(morgan('tiny'))
     const maara = persons.length
     const paiva = new Date()
     res.send(`<p> Phonebook has info for ${maara} people </p> <p> ${paiva} </p>`)
-}) 
+})
  */
 
 app.get('/api/persons', (request, response) => {
@@ -28,32 +28,32 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.post('/api/persons', (request, response, next) => {
-    const body = request.body
-    console.log("body.name")
-    console.log(body.name)
-    console.log(body)
+  const body = request.body
+  console.log('body.name')
+  console.log(body.name)
+  console.log(body)
 
 
-/*     if (body.name.length < 1) {
+  /*     if (body.name.length < 1) {
       console.log("iffin sisällä1")
       return response.status(400).send({ error: 'Nimi tai puhelinnumero ei voi olla tyhjä' })
       next(error)
-        /* return response.status(204).json({ error: 'name missing' }) 
+        /* return response.status(204).json({ error: 'name missing' })
     }
- 
+
     if (body.number.length < 1) {
       console.log("iffin sisällä2")
       return response.status(400).send({ error: 'Nimi tai puhelinnumero ei voi olla tyhjä' })
       next(error)
-        /* return response.status(204).json({ error: 'number missing' }) 
+        /* return response.status(204).json({ error: 'number missing' })
     }  */
- 
-    const henkilo = new Yhteystieto( {
-        name: body.name,
-        number: body.number,
-    })
 
-    henkilo.save() 
+  const henkilo = new Yhteystieto( {
+    name: body.name,
+    number: body.number,
+  })
+
+  henkilo.save()
     .then(tallennettuNumero => tallennettuNumero.toJSON())
     .then(tallennettuNumero => {
       response.json(tallennettuNumero)
@@ -77,10 +77,10 @@ app.get('/api/persons/:id', (request, response, next)  => {
 
 app.delete('/api/persons/:id', (request, response, next)  => {
   Yhteystieto.findByIdAndRemove(request.params.id)
-  .then(result => {
-    response.status(204).end()
-  })
-  .catch(error => next(error))
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 
@@ -97,23 +97,23 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
-  }  
+  }
 
   if (error.name === 'ReferenceError' ) {
     return response.status(400).send({ error: 'Nimi tai puhelinnumero ei voi olla tyhjä' })
-  }   
+  }
 
   if (error.name === 'ValidationError') {
-  return response.status(400).json({ error: error.message })
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
-} 
+}
 
 app.use(errorHandler)
 
 const PORT = process.env.PORT
 
 app.listen(PORT, () => {
-console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
